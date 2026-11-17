@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Any
+
+from tomlkit import datetime
 from app.services.cache import get_revenue_summary
 from app.core.auth import authenticate_request as get_current_user
 
@@ -12,8 +14,9 @@ async def get_dashboard_summary(
 ) -> Dict[str, Any]:
     
     tenant_id = getattr(current_user, "tenant_id", "default_tenant") or "default_tenant"
-    
-    revenue_data = await get_revenue_summary(property_id, tenant_id)
+    year = datetime.now().year
+    month = datetime.now().month
+    revenue_data = await get_revenue_summary(property_id, tenant_id , year , month )
     
     total_revenue_float = float(revenue_data['total'])
     
